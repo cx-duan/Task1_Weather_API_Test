@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" ignored="0" total="2" passed="2">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Default Suite" duration-ms="4833" started-at="2021-12-21T10:37:48 AEDT" finished-at="2021-12-21T10:37:53 AEDT">
+    <groups>
+    </groups>
+    <test name="Task1_Weather_API_Test" duration-ms="4833" started-at="2021-12-21T10:37:48 AEDT" finished-at="2021-12-21T10:37:53 AEDT">
+      <class name="APITests">
+        <test-method status="PASS" signature="test1()[pri:0, instance:APITests@c038203]" name="test1" duration-ms="3937" started-at="2021-12-21T10:37:49 AEDT" finished-at="2021-12-21T10:37:52 AEDT">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test1 -->
+        <test-method status="PASS" signature="test2()[pri:0, instance:APITests@c038203]" name="test2" duration-ms="833" started-at="2021-12-21T10:37:52 AEDT" finished-at="2021-12-21T10:37:53 AEDT">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test2 -->
+      </class> <!-- APITests -->
+    </test> <!-- Task1_Weather_API_Test -->
+  </suite> <!-- Default Suite -->
+</testng-results>
