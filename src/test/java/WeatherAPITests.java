@@ -1,26 +1,22 @@
 import static io.restassured.RestAssured.*;
-
-
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 import io.restassured.response.ValidatableResponse;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
-
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 
 public class WeatherAPITests {
 
-    final static String url="https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en";
+    private static String url="https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=rhrread&lang=en";
     final static String baseURI = "https://data.weather.gov.hk/weatherAPI/opendata/weather.php";
     private static SoftAssert softAssert = new SoftAssert();
 
     //Main test class. Variables are reusable and easily scalable within the API.
     //Aim is to provide a generic API test, validating response, status, headers.
+    //Testing the focus dataset as required in the exercise
     @Test
     public void DailyWeatherReportTests(){
         getResponseTime();
@@ -28,10 +24,22 @@ public class WeatherAPITests {
         getValidateResponseStatus("rhrread","en");
         getValidateResponseHeaders("application/json; charset=utf-8","Apache");
         validateResponseNotNull("rainfall");
-        validateResponseNotNull("warningMessage.data");
+        validateResponseNotNull("warningMessage");
         validateExtractedValue("rainfall.data", "place", "Kwai Tsing");
         validateExtractedValue("temperature.data","unit","C");
+    }
 
+    //Showing the reusability of the test for different parameters than the focus dataset
+    //No nested JSON queries so there is no need for the validateExtractedValueMethod()
+    @Test
+    public void LocalWeatherForecastTests(){
+        url = "https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=flw&lang=en";
+        getResponseTime();
+        getResponseBody("flw","en");
+        getValidateResponseStatus("flw","en");
+        getValidateResponseHeaders("application/json; charset=utf-8","Apache");
+        validateResponseNotNull("generalSituation");
+        validateResponseNotNull("tcInfo");
     }
 
     //Get response time
@@ -40,9 +48,9 @@ public class WeatherAPITests {
                 .timeIn(TimeUnit.MILLISECONDS) + " milliseconds");
     }
 
-            //Get JSON Response body - This returns the entire body of the API response.
-            // There isn't a validation here but will include some for the nested queries to ensure that the values
-            // don't have any issues.
+        //Get JSON Response body - This returns the entire body of the API response.
+        // There isn't a validation here but will include some for the nested queries to ensure that the values
+        // don't have any issues.
     public static void getResponseBody(String dataType, String lang){
         System.out.println(dataType +" Response Body is => ");
         //Specify query parameters for the API. In this case, dataType and lang are the variables: rhrread, en.
@@ -88,8 +96,8 @@ public class WeatherAPITests {
 
     }
 
-    //Check response is not null with a given parameter. Flexible adjustments can be
-    // made at the test method
+        //Check response is not null with a given parameter. Flexible adjustments can be
+        // made at the test method
     public static void validateResponseNotNull(String parameter)throws IllegalArgumentException{
         try {
             get(url)
@@ -97,23 +105,13 @@ public class WeatherAPITests {
                     .body(parameter, notNullValue()
                     );
         }catch(Exception e){
+            //Soft assert to continue tests. Returns error message for further investigation
             softAssert.fail("Parameter not defined");
             System.out.println(e);
         }
     }
 
-    //@Test
-    public void testGetStringValue() {
-        ArrayList<String> test =
-        get(url)
-                .then()
-                .extract()
-                .path("uvindex");
-        System.out.println(test);
-
-    }
-
-    //Specific validation for nested queries. Used when the tester wants to verify a value.
+        //Specific validation for nested queries. Used when the tester wants to verify a value.
     public void validateExtractedValue(String path, String data, String valueToFind) {
         //Extract specific value from path using method variables that can be adjusted in the main
         //test method. As the process finds the extracted value
@@ -122,11 +120,14 @@ public class WeatherAPITests {
                         .then()
                         .extract()
                         .response()
-                        .path( path+".find { it."+data+" == '"+valueToFind+"' }."+data);
+                        //Path with injected variable values
+                        .path( path+".find { it."+data+" == '"+valueToFind.toString()+"' }."+data);
+        //If the extracted value is not null, print that the test has found the value
         if(extractedValue != null) {
             System.out.println("Found extracted value from " + path + "-" + data + ": " + extractedValue);
         }
-        Assert.assertNotNull(extractedValue,"Extracted value not found");
+        //If the extracted value is null, print error report
+        Assert.assertNotNull(extractedValue,"Extracted value not found in " + path + "."+ data + ". Expected Value: " + valueToFind);
     }
 
 }
