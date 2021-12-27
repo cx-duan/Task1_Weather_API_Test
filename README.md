@@ -10,6 +10,15 @@ The project should work just by cloning the repository and running on your IDE.
 <b> Potential issue with the HTTP certificate.</b> \
 You may need to: add the certificate to JDK cacerts keystore \
 Certificate file is already saved in the project in: \src\main\resources \
-Locate the cacert file in: $JAVA_HOME/lib/security \ 
+Locate the cacert file in: $JAVA_HOME/lib/security \
 Run KeyTool on command prompt as user with permission \
-keytool -import -storepass changeit -noprompt -alias test -keystore cacerts -trustcacerts -file [copy certificate file path] \
+keytool -import -storepass changeit -noprompt -alias test -keystore cacerts -trustcacerts -file [copy certificate file path]
+
+<strong> API Test Run: </strong>
+- Get Response Time 
+- Get Response Body 
+- Get Response Status 
+- Get Response Headers 
+- Validate Response parameters are not null 
+- Validate specific values are not null 
+
